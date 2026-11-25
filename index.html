@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Gift Exchange – Cabutan Undian</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --success-bg: #ecfdf5;
+      --success-text: #065f46;
+      --warn-bg: #fffbeb;
+      --warn-text: #92400e;
+      --danger-bg: #fef2f2;
+      --danger-text: #991b1b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: #ffffff;
+      padding: 22px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 0.92rem;
+      opacity: 0.95;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.94rem;
+    }
+
+    .name-list-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .name-chip {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .name-chip.selected {
+      background: #eef2ff;
+      border-color: var(--primary);
+      color: #312e81;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .dot-done { background: #10b981; }
+    .dot-pending { background: #f59e0b; }
+
+    select, input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.96rem;
+      background: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    .btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: var(--text);
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .badge-done {
+      background: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .badge-pending {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+    }
+
+    .result-box {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #c7d2fe;
+      background: #eef2ff;
+    }
+
+    .result-box h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #312e81;
+    }
+
+    .color-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #c7d2fe;
+      font-weight: 600;
+      font-size: 0.88rem;
+      display: inline-block;
+    }
+
+    .notice {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .alert-danger {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 700;
+    }
+
+    .admin-row-flex {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .admin-row-flex input {
+      max-width: 240px;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Family Gift Exchange – Cabutan Undian</h1>
+      <p>Pilih nama anda pada senarai di bawah, kemudian tekan Cabut / Undi (sekali sahaja).</p>
+    </header>
+
+    <div class="tabs">
+      <button type="button" class="tab-btn active" data-group="group1" onclick="switchGroup('group1')">Group 1 (Warna · 4)</button>
+      <button type="button" class="tab-btn" data-group="group2" onclick="switchGroup('group2')">Group 2 (Warna · 5)</button>
+      <button type="button" class="tab-btn" data-group="group3" onclick="switchGroup('group3')">Group 3 (Nama)</button>
+    </div>
+
+    <div class="card">
+      <h2 id="groupTitle" style="font-size:1.12rem; margin-bottom:12px;">Group 1</h2>
+
+      <label>Senarai Nama Peserta (Klik Nama Anda)</label>
+      <div id="nameButtonsList" class="name-list-grid"></div>
+
+      <label for="participantSelect">Atau Pilih Dari Senarai:</label>
+      <select id="participantSelect" onchange="selectParticipant(this.value)"></select>
+
+      <div id="participantStatusBar" style="margin-bottom: 12px;"></div>
+
+      <button type="button" id="drawBtn" class="btn" onclick="handleDraw()">Cabut / Undi Sekarang</button>
+
+      <div id="myResultContainer"></div>
+      <p class="notice">Titik hijau = sudah mengundi · Titik kuning = belum mengundi. Keputusan peserta lain dirahsiakan.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:1rem; margin-bottom:8px;">Akses Admin (Lihat Keseluruhan Undi)</h3>
+      <p class="notice" style="margin-bottom:10px;">Masukkan kata laluan admin untuk melihat siapa memberi dan menerima bagi kumpulan yang dipilih.</p>
+
+      <div class="admin-row-flex">
+        <input type="password" id="adminPasswordInput" placeholder="Masukkan password admin" />
+        <button type="button" class="btn" onclick="unlockAdmin()">Buka Panel Admin</button>
+        <button type="button" class="btn btn-secondary" id="lockAdminBtn" onclick="lockAdmin()" style="display:none;">Kunci Admin</button>
+      </div>
+
+      <div id="adminError" class="alert-danger" style="display:none;"></div>
+
+      <div id="adminPanel" style="display:none; margin-top:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <strong>Keseluruhan Padanan Undi (<span id="adminGroupLabel"></span>)</strong>
+          <button type="button" class="btn btn-danger" onclick="resetAllData()">Reset Semua Undian</button>
+        </div>
+        <div id="adminTableContainer" style="overflow-x:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const ADMIN_PASSWORD = "987321";
+      const STORAGE_KEY = "family_gift_exchange_list_v3";
+
+      const DATA = {
+        group1: {
+          title: "Group 1 – Gen X, Millennials & Boomers (4 Hadiah / Warna)",
+          type: "color",
+          giftsPerPerson: 4,
+          colors: [
+            "Hitam", "Putih", "Biru", "Merah", "Kuning", "Jingga",
+            "Hijau", "Coklat", "Merah Jambu", "Emas", "Ungu", "Kelabu"
+          ],
+          members: [
+            { id: "g1-1", name: "Mak Long", family: "Family Mak Long" },
+            { id: "g1-2", name: "Pak Ngah", family: "Individu: Pak Ngah" },
+            { id: "g1-3", name: "Ateh",     family: "Individu: Ateh" },
+            { id: "g1-4", name: "Inok",     family: "Family Inok" },
+            { id: "g1-5", name: "Pak Cu",   family: "Individu: Pak Cu" },
+            { id: "g1-6", name: "Kak Mas",  family: "Family Mak Long" },
+            { id: "g1-7", name: "Kak Ngah", family: "Family Mak Long" },
+            { id: "g1-8", name: "Linda",    family: "Family Inok" },
+            { id: "g1-9", name: "Ijad",     family: "Family Inok" },
+            { id: "g1-10", name: "Nana",    family: "Family Inok" },
+            { id: "g1-11", name: "Lin",     family: "Family Inok" },
+            { id: "g1-12", name: "Shira",   family: "Family Inok" }
+          ]
+        },
+        group2: {
+          title: "Group 2 – Gen Z & Gen Alpha (5 Hadiah / Warna)",
+          type: "color",
+          giftsPerPerson: 5,
+          colors: [
+            "Hitam", "Putih", "Biru", "Merah", "Kuning", "Jingga",
+            "Hijau", "Coklat", "Merah Jambu", "Emas", "Ungu", "Kelabu",
+            "Peach", "Krim", "Turqoise"
+          ],
+          members: [
+            { id: "g2-1",  name: "Haiqal",   family: "Family Haiqal" },
+            { id: "g2-2",  name: "Aleesya",  family: "Family Haiqal" },
+            { id: "g2-3",  name: "Aleeya",   family: "Family Haiqal" },
+            { id: "g2-4",  name: "Aira",     family: "Family Haiqal" },
+            { id: "g2-5",  name: "Iris",     family: "Family Iris" },
+            { id: "g2-6",  name: "Azwa",     family: "Family Haiqal" },
+            { id: "g2-7",  name: "Muaz",     family: "Family Iris" },
+            { id: "g2-8",  name: "Furqan",   family: "Family Furqan" },
+            { id: "g2-9",  name: "Aqeela",   family: "Family Haiqal" },
+            { id: "g2-10", name: "Zaid",     family: "Family Iris" },
+            { id: "g2-11", name: "Aileen",   family: "Family Haiqal" },
+            { id: "g2-12", name: "Farhah",   family: "Family Furqan" },
+            { id: "g2-13", name: "Sufyan",   family: "Individu: Sufyan" },
+            { id: "g2-14", name: "Adam",     family: "Family Haiqal" },
+            { id: "g2-15", name: "Cik Reen", family: "Individu: Cik Reen" }
+          ]
+        },
+        group3: {
+          title: "Group 3 – Gen Alpha & Gen Beta (Pertukaran Mengikut Nama)",
+          type: "name",
+          members: [
+            { id: "g3-1", name: "Ayyan",    family: "Family 2" },
+            { id: "g3-2", name: "Safiyyah", family: "Family 1" },
+            { id: "g3-3", name: "Daud",     family: "Family 3" },
+            { id: "g3-4", name: "Faatir",   family: "Family 4" },
+            { id: "g3-5", name: "Hannah",   family: "Family 1" },
+            { id: "g3-6", name: "Abot",     family: "Family 2" },
+            { id: "g3-7", name: "Fatima",   family: "Family 4" }
+          ]
+        }
+      };
+
+      function shuffle(arr) {
+        const copy = arr.slice();
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = copy[i];
+          copy[i] = copy[j];
+          copy[j] = tmp;
+        }
+        return copy;
+      }
+
+      function generateColorAssignments(members, colors, giftsPerPerson) {
+        for (let attempt = 0; attempt < 50; attempt++) {
+          const shuffledColors = shuffle(colors);
+          const giversByColor = {};
+          const giveColorByMember = {};
+
+          for (let i = 0; i < members.length; i++) {
+            const m = members[i];
+            const c = shuffledColors[i];
+            giveColorByMember[m.id] = c;
+            giversByColor[c] = m;
+          }
+
+          const receivedByMember = {};
+          for (let i = 0; i < members.length; i++) {
+            receivedByMember[members[i].id] = new Set();
+          }
+
+          const sortedColors = shuffle(colors).sort(function (cA, cB) {
+            const famA = giversByColor[cA].family;
+            const famB = giversByColor[cB].family;
+            const countA = members.filter(function (m) { return m.family !== famA; }).length;
+            const countB = members.filter(function (m) { return m.family !== famB; }).length;
+            return countA - countB;
+          });
+
+          const slots = [];
+          for (let i = 0; i < sortedColors.length; i++) {
+            for (let k = 0; k < giftsPerPerson; k++) {
+              slots.push(sortedColors[i]);
+            }
+          }
+
+          let steps = 0;
+          const MAX_STEPS = 12000;
+
+          function backtrack(idx) {
+            if (idx === slots.length) return true;
+            if (++steps > MAX_STEPS) return false;
+
+            const color = slots[idx];
+            const giver = giversByColor[color];
+
+            const candidates = shuffle(members)
+              .filter(function (receiver) {
+                return (
+                  receiver.id !== giver.id &&
+                  receiver.family !== giver.family &&
+                  receivedByMember[receiver.id].size < giftsPerPerson &&
+                  !receivedByMember[receiver.id].has(color)
+                );
+              })
+              .sort(function (a, b) {
+                return receivedByMember[a.id].size - receivedByMember[b.id].size;
+              });
+
+            for (let i = 0; i < candidates.length; i++) {
+              const receiver = candidates[i];
+              receivedByMember[receiver.id].add(color);
+              if (backtrack(idx + 1)) return true;
+              receivedByMember[receiver.id].delete(color);
+            }
+            return false;
+          }
+
+          if (backtrack(0)) {
+            const map = {};
+            for (let i = 0; i < members.length; i++) {
+              const m = members[i];
+              map[m.id] = {
+                participantId: m.id,
+                name: m.name,
+                family: m.family,
+                type: "color",
+                giveColor: giveColorByMember[m.id],
+                giftsToPrepareCount: giftsPerPerson,
+                receiveColors: Array.from(receivedByMember[m.id]),
+                hasDrawn: false
+              };
+            }
+            return map;
+          }
+        }
+        throw new Error("Gagal menjana padanan warna.");
+      }
+
+      function generateNameAssignments(members) {
+        for (let attempt = 0; attempt < 50; attempt++) {
+          const usedReceivers = new Set();
+          const chosen = {};
+
+          function backtrack(idx) {
+            if (idx === members.length) return true;
+            const giver = members[idx];
+            const candidates = shuffle(members).filter(function (receiver) {
+              return (
+                receiver.id !== giver.id &&
+                receiver.family !== giver.family &&
+                !usedReceivers.has(receiver.id)
+              );
+            });
+
+            for (let i = 0; i < candidates.length; i++) {
+              const receiver = candidates[i];
+              usedReceivers.add(receiver.id);
+              chosen[giver.id] = receiver;
+              if (backtrack(idx + 1)) return true;
+              usedReceivers.delete(receiver.id);
+              delete chosen[giver.id];
+            }
+            return false;
+          }
+
+          if (backtrack(0)) {
+            const map = {};
+            for (let i = 0; i < members.length; i++) {
+              const giver = members[i];
+              const receiver = chosen[giver.id];
+              map[giver.id] = {
+                participantId: giver.id,
+                name: giver.name,
+                family: giver.family,
+                type: "name",
+                receiverName: receiver.name,
+                hasDrawn: false
+              };
+            }
+            return map;
+          }
+        }
+        throw new Error("Gagal menjana padanan nama.");
+      }
+
+      function createFreshState() {
+        return {
+          group1: generateColorAssignments(DATA.group1.members, DATA.group1.colors, DATA.group1.giftsPerPerson),
+          group2: generateColorAssignments(DATA.group2.members, DATA.group2.colors, DATA.group2.giftsPerPerson),
+          group3: generateNameAssignments(DATA.group3.members)
+        };
+      }
+
+      function isValidState(st) {
+        if (!st || typeof st !== "object") return false;
+        const keys = ["group1", "group2", "group3"];
+        for (let k = 0; k < keys.length; k++) {
+          const gk = keys[k];
+          if (!st[gk]) return false;
+          const members = DATA[gk].members;
+          for (let i = 0; i < members.length; i++) {
+            if (!st[gk][members[i].id]) return false;
+          }
+        }
+        return true;
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (isValidState(parsed)) return parsed;
+          }
+        } catch (e) {}
+        const fresh = createFreshState();
+        saveState(fresh);
+        return fresh;
+      }
+
+      function saveState(state) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+      }
+
+      let appState = loadState();
+      let currentGroup = "group1";
+      let selectedId = null;
+      let isAdminUnlocked = false;
+
+      window.switchGroup = function (groupKey) {
+        currentGroup = groupKey;
+        document.querySelectorAll(".tab-btn").forEach(function (btn) {
+          btn.classList.toggle("active", btn.getAttribute("data-group") === groupKey);
+        });
+        document.getElementById("groupTitle").textContent = DATA[groupKey].title;
+
+        const members = DATA[groupKey].members;
+        selectedId = members[0] ? members[0].id : null;
+
+        const select = document.getElementById("participantSelect");
+        select.innerHTML = members
+          .map(function (m) {
+            return '<option value="' + m.id + '">' + m.name + "</option>";
+          })
+          .join("");
+        if (selectedId) select.value = selectedId;
+
+        renderNameButtons();
+        renderParticipantPanel();
+        if (isAdminUnlocked) renderAdminTable();
+      };
+
+      window.selectParticipant = function (pid) {
+        selectedId = pid;
+        const select = document.getElementById("participantSelect");
+        if (select.value !== pid) select.value = pid;
+        renderNameButtons();
+        renderParticipantPanel();
+      };
+
+      function renderNameButtons() {
+        const container = document.getElementById("nameButtonsList");
+        const members = DATA[currentGroup].members;
+        container.innerHTML = members
+          .map(function (m) {
+            const rec = appState[currentGroup][m.id];
+            const isSel = m.id === selectedId ? " selected" : "";
+            const dotClass = rec.hasDrawn ? "dot-done" : "dot-pending";
+            const titleText = rec.hasDrawn ? "Sudah mengundi" : "Belum mengundi";
+            return (
+              '<button type="button" class="name-chip' + isSel + '" title="' + titleText + '" onclick="selectParticipant(\'' + m.id + '\')">' +
+              "<span>" + m.name + "</span>" +
+              '<span class="dot ' + dotClass + '"></span>' +
+              "</button>"
+            );
+          })
+          .join("");
+      }
+
+      window.renderParticipantPanel = function () {
+        if (!selectedId) return;
+        const record = appState[currentGroup][selectedId];
+        const statusBar = document.getElementById("participantStatusBar");
+        const drawBtn = document.getElementById("drawBtn");
+        const resultBox = document.getElementById("myResultContainer");
+
+        if (!record) return;
+
+        if (record.hasDrawn) {
+          statusBar.innerHTML = '<span class="badge badge-done">' + record.name + " – Sudah Mengundi (Dikunci)</span>";
+          drawBtn.disabled = true;
+          drawBtn.textContent = "Undian Sudah Selesai";
+          resultBox.innerHTML = renderResultCard(record);
+        } else {
+          statusBar.innerHTML = '<span class="badge badge-pending">' + record.name + " – Belum Mengundi</span>";
+          drawBtn.disabled = false;
+          drawBtn.textContent = "Cabut / Undi Untuk " + record.name;
+          resultBox.innerHTML = "";
+        }
+      };
+
+      function renderResultCard(record) {
+        if (record.type === "color") {
+          const pills = record.receiveColors
+            .map(function (c) {
+              return '<span class="pill">' + c + "</span>";
+            })
+            .join("");
+          return (
+            '<div class="result-box">' +
+            "<h3>Keputusan Cabutan Anda – " + record.name + "</h3>" +
+            '<p><strong>Warna Hadiah Untuk Diberi:</strong> <span class="pill">' + record.giveColor + "</span> (Sediakan <strong>" + record.giftsToPrepareCount + " hadiah</strong> warna ini)</p>" +
+            '<p style="margin-top:10px;"><strong>Warna Hadiah Untuk Diterima (' + record.receiveColors.length + " warna berbeza):</strong></p>" +
+            '<div class="color-pills">' + pills + "</div>" +
+            "</div>"
+          );
+        }
+
+        return (
+          '<div class="result-box">' +
+          "<h3>Keputusan Cabutan Anda – " + record.name + "</h3>" +
+          '<p><strong>Penerima Hadiah Anda:</strong> <span class="pill">' + record.receiverName + "</span></p>" +
+          '<p class="notice">Sila rahsiakan nama penerima hadiah anda sehingga hari pertukaran hadiah.</p>' +
+          "</div>"
+        );
+      }
+
+      window.handleDraw = function () {
+        if (!selectedId) return;
+        const record = appState[currentGroup][selectedId];
+        if (!record || record.hasDrawn) return;
+
+        record.hasDrawn = true;
+        saveState(appState);
+        renderNameButtons();
+        renderParticipantPanel();
+        if (isAdminUnlocked) renderAdminTable();
+      };
+
+      window.unlockAdmin = function () {
+        const input = document.getElementById("adminPasswordInput");
+        const errBox = document.getElementById("adminError");
+        if (input.value === ADMIN_PASSWORD) {
+          isAdminUnlocked = true;
+          errBox.style.display = "none";
+          document.getElementById("adminPanel").style.display = "block";
+          document.getElementById("lockAdminBtn").style.display = "inline-block";
+          renderAdminTable();
+        } else {
+          errBox.textContent = "Password admin salah.";
+          errBox.style.display = "block";
+        }
+      };
+
+      window.lockAdmin = function () {
+        isAdminUnlocked = false;
+        document.getElementById("adminPasswordInput").value = "";
+        document.getElementById("adminPanel").style.display = "none";
+        document.getElementById("lockAdminBtn").style.display = "none";
+      };
+
+      function renderAdminTable() {
+        if (!isAdminUnlocked) return;
+        document.getElementById("adminGroupLabel").textContent = DATA[currentGroup].title;
+        const members = DATA[currentGroup].members;
+        const groupObj = appState[currentGroup];
+
+        if (DATA[currentGroup].type === "color") {
+          const giverByColor = {};
+          members.forEach(function (m) {
+            const r = groupObj[m.id];
+            giverByColor[r.giveColor] = r.name;
+          });
+
+          const rows = members
+            .map(function (m) {
+              const r = groupObj[m.id];
+              const receivedDetails = r.receiveColors
+                .map(function (c) {
+                  return c + " <em>(dari " + (giverByColor[c] || "-") + ")</em>";
+                })
+                .join(", ");
+              const status = r.hasDrawn ? "Selesai" : "Belum";
+              return (
+                "<tr>" +
+                "<td><strong>" + r.name + '</strong><br><span class="notice">' + r.family + "</span></td>" +
+                "<td>" + status + "</td>" +
+                "<td><strong>" + r.giveColor + "</strong> (" + r.giftsToPrepareCount + "x)</td>" +
+                "<td>" + receivedDetails + "</td>" +
+                "</tr>"
+              );
+            })
+            .join("");
+
+          document.getElementById("adminTableContainer").innerHTML =
+            "<table><thead><tr><th>Peserta</th><th>Status</th><th>Warna Diberi</th><th>Warna Diterima &amp; Pemberi</th></tr></thead><tbody>" +
+            rows +
+            "</tbody></table>";
+        } else {
+          const giverOf = {};
+          members.forEach(function (m) {
+            const r = groupObj[m.id];
+            giverOf[r.receiverName] = r.name;
+          });
+
+          const rows = members
+            .map(function (m) {
+              const r = groupObj[m.id];
+              const status = r.hasDrawn ? "Selesai" : "Belum";
+              return (
+                "<tr>" +
+                "<td><strong>" + r.name + '</strong><br><span class="notice">' + r.family + "</span></td>" +
+                "<td>" + status + "</td>" +
+                "<td><strong>" + r.receiverName + "</strong></td>" +
+                "<td>" + (giverOf[r.name] || "-") + "</td>" +
+                "</tr>"
+              );
+            })
+            .join("");
+
+          document.getElementById("adminTableContainer").innerHTML =
+            "<table><thead><tr><th>Peserta</th><th>Status</th><th>Memberi Kepada</th><th>Menerima Daripada</th></tr></thead><tbody>" +
+            rows +
+            "</tbody></table>";
+        }
+      }
+
+      window.resetAllData = function () {
+        if (!confirm("Adakah anda pasti mahu menjana semula cabutan dan mengosongkan semua status undian?")) return;
+        appState = createFreshState();
+        saveState(appState);
+        renderNameButtons();
+        renderParticipantPanel();
+        if (isAdminUnlocked) renderAdminTable();
+      };
+
+      switchGroup("group1");
+    })();
+  </script>
+</body>
+</html>
